@@ -1,4 +1,4 @@
-const database = require("../../../../infra/database");
+const database = require("infra/database");
 
 test("Get to /api/v1/status should return 200", async () => {
   const result = await database.query("select 1 + 1");
