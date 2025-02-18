@@ -12,11 +12,12 @@ async function query(queryObject) {
     await client.end();
   }
 }
-
-export default {
+const database = {
   query,
   getNewClient,
 };
+
+export default database;
 
 async function getNewClient() {
   const client = new Client({
