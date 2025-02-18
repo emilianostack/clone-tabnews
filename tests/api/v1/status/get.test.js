@@ -1,4 +1,3 @@
-const database = require("../../../../infra/database.js");
 import orchestrator from "../orchestrator.js";
 
 beforeAll(async () => {
