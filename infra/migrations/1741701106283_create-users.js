@@ -3,7 +3,7 @@ exports.up = (pgm) => {
     id: {
       type: "uuid",
       primaryKey: true,
-      default: pgm.fun("gen_random_uuid()"),
+      default: pgm.func("gen_random_uuid()"),
     },
     // For reference, GitHub limits username 39 characters
     username: {
@@ -17,16 +17,18 @@ exports.up = (pgm) => {
       unique: true,
     },
     password: {
-      type: "varchar(72)",
+      type: "varchar(60)",
       notNull: true,
     },
     created_at: {
       type: "timestamptz",
-      default: pgm.func("now()"),
+      default: pgm.func("timezone('utc', now())"),
+      notNull: true,
     },
-    upadted_at: {
+    updated_at: {
       type: "timestamptz",
-      default: pgm.func("now()"),
+      default: pgm.func("timezone('utc', now())"),
+      notNull: true,
     },
   });
 };
