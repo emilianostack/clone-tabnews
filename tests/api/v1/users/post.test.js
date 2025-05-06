@@ -6,9 +6,7 @@ import password from "models/password.js";
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
   await orchestrator.clearDatabase();
-  await fetch("http://localhost:3000/api/v1/migrations", {
-    method: "POST",
-  });
+  await orchestrator.runPendingMigrations();
 });
 
 describe("POST /api/v1/users", () => {
