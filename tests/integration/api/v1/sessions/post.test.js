@@ -31,7 +31,7 @@ describe("POST /api/v1/sessions", () => {
 
       expect(responseBody).toEqual({
         name: "UnauthorizedError",
-        message: "Dados de autorização não conferem.",
+        message: "Dados de autenticação não conferem.",
         action: "Verifique se os dados enviados estão corretos.",
         status_code: 401,
       });
@@ -42,6 +42,7 @@ describe("POST /api/v1/sessions", () => {
         email: "email.certo@curso.dev",
         senha: "senha-correta",
       });
+
       const response = await fetch("http://localhost:3000/api/v1/sessions", {
         method: "POST",
         headers: {
@@ -58,7 +59,7 @@ describe("POST /api/v1/sessions", () => {
 
       expect(responseBody).toEqual({
         name: "UnauthorizedError",
-        message: "Dados de autorização não conferem.",
+        message: "Dados de autenticação não conferem.",
         action: "Verifique se os dados enviados estão corretos.",
         status_code: 401,
       });
@@ -82,7 +83,7 @@ describe("POST /api/v1/sessions", () => {
 
       expect(responseBody).toEqual({
         name: "UnauthorizedError",
-        message: "Dados de autorização não conferem.",
+        message: "Dados de autenticação não conferem.",
         action: "Verifique se os dados enviados estão corretos.",
         status_code: 401,
       });
@@ -93,6 +94,9 @@ describe("POST /api/v1/sessions", () => {
         email: "tudo.correto@curso.dev",
         password: "tudocorreto",
       });
+
+      await orchestrator.activateUser(createdUser);
+
       const response = await fetch("http://localhost:3000/api/v1/sessions", {
         method: "POST",
         headers: {

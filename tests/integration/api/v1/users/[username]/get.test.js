@@ -1,5 +1,5 @@
 import { version as uuidVersion } from "uuid";
-import orchestrator from "../../orchestrator.js";
+import orchestrator from "../../orchestrator";
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
@@ -70,8 +70,8 @@ describe("GET /api/v1/users/[username]", () => {
       const responseBody = await response.json();
       expect(responseBody).toEqual({
         name: "NotFoundError",
-        message: "O username informado não foi encontrado no sistema",
-        action: "Verifique se o username está digitado corretamente",
+        message: "O username informado não foi encontrado no sistema.",
+        action: "Verifique se o username está digitado corretamente.",
         status_code: 404,
       });
     });
