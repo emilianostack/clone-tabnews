@@ -37,9 +37,6 @@ describe("Use case: Registration Flow (all successful)", () => {
     expect(createUserResponseBody).toEqual({
       id: createUserResponseBody.id,
       username: "RegistrationFlow",
-      email: "registration.flow@curso.dev",
-      password: createUserResponseBody.password,
-
       features: ["read:activation_token"],
       created_at: createUserResponseBody.created_at,
       updated_at: createUserResponseBody.updated_at,
@@ -54,7 +51,6 @@ describe("Use case: Registration Flow (all successful)", () => {
     expect(lastEmail.text).toContain("RegistrationFlow");
 
     activationTokenId = orchestrator.extractUUID(lastEmail.text);
-    console.log(lastEmail.text, activationTokenId);
     expect(lastEmail.text).toContain(
       `${webserver.origin}/cadastro/ativar/${activationTokenId}`,
     );
@@ -107,7 +103,6 @@ describe("Use case: Registration Flow (all successful)", () => {
   });
 
   test("Get user information", async () => {
-    console.log("TOKENXXXXXXXXXXXXXXXXXXXXX", createSessionsResponseBody);
     const userResponse = await fetch("http://localhost:3000/api/v1/user", {
       headers: {
         cookie: `session_id=${createSessionsResponseBody.token}`,
