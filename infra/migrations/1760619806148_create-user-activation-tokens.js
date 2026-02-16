@@ -30,4 +30,4 @@ exports.up = (pgm) => {
   });
 };
 
-exports.down = (pgm) => {};
+exports.down = () => {};
