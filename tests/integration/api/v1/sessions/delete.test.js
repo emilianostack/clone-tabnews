@@ -1,6 +1,7 @@
 import setCookieParser from "set-cookie-parser";
 import orchestrator from "../orchestrator.js";
 import session from "models/session.js";
+import { version as uuidVersion } from "uuid";
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
@@ -9,7 +10,7 @@ beforeAll(async () => {
 });
 
 describe("DELETE /api/v1/sessions", () => {
-  describe("Anonymous user", () => {
+  describe("Default user", () => {
     test("With nonexistent session", async () => {
       const nonExistentToken =
         "GoLmwtrlsxc5szPdRQ2fsFWoOBrFaR3VXxcwb5Tfx5eRCX4PBjgP84a5sBBsJ9tA";
@@ -74,13 +75,21 @@ describe("DELETE /api/v1/sessions", () => {
       const responseBody = await response.json();
 
       expect(responseBody).toEqual({
-        id: responseBody.id,
-        token: responseBody.token,
-        user_id: createdUser.id,
+        id: sessionObject.id,
+        token: sessionObject.token,
+        user_id: sessionObject.user_id,
         expires_at: responseBody.expires_at,
         created_at: responseBody.created_at,
         updated_at: responseBody.updated_at,
       });
+
+      expect(uuidVersion(responseBody.id)).toBe(4);
+
+      expect(Date.parse(responseBody.expires_at)).not.toBeNaN();
+
+      expect(Date.parse(responseBody.created_at)).not.toBeNaN();
+
+      expect(Date.parse(responseBody.updated_at)).not.toBeNaN();
 
       expect(
         responseBody.expires_at < sessionObject.expires_at.toISOString(),

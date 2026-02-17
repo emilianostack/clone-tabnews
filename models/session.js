@@ -84,7 +84,7 @@ async function renew(sessionId) {
   }
 }
 
-async function expiresById(sessionId) {
+async function expireById(sessionId) {
   const renewedSessionObject = runUpdateQuery(sessionId);
   return renewedSessionObject;
 
@@ -111,7 +111,7 @@ const session = {
   EXPIRATION_IN_MILLISECONDS,
   findOneValidByToken,
   renew,
-  expiresById,
+  expireById,
 };
 
 export default session;
