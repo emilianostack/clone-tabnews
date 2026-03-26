@@ -1,4 +1,5 @@
 import orchestrator from "../orchestrator.js";
+import webserver from "infra/webserver";
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
@@ -10,12 +11,9 @@ describe(`POST /api/v1/migrations`, () => {
   describe(`Anonymous user`, () => {
     describe(`Running pending migrations`, () => {
       test(`For the first time`, async () => {
-        const response1 = await fetch(
-          "http://localhost:3000/api/v1/migrations",
-          {
-            method: "POST",
-          },
-        );
+        const response1 = await fetch(`${webserver.origin}/api/v1/migrations`, {
+          method: "POST",
+        });
         expect(response1.status).toBe(403);
 
         const responseBody = await response1.json();
@@ -29,12 +27,9 @@ describe(`POST /api/v1/migrations`, () => {
       });
 
       test(`For the second time`, async () => {
-        const response2 = await fetch(
-          "http://localhost:3000/api/v1/migrations",
-          {
-            method: "POST",
-          },
-        );
+        const response2 = await fetch(`${webserver.origin}/api/v1/migrations`, {
+          method: "POST",
+        });
         expect(response2.status).toBe(403);
 
         const responseBody = await response2.json();
@@ -55,16 +50,13 @@ describe(`POST /api/v1/migrations`, () => {
         const activateUser = await orchestrator.activateUser(defaultUser);
         const sessionObject = await orchestrator.createSession(activateUser.id);
 
-        const response1 = await fetch(
-          "http://localhost:3000/api/v1/migrations",
-          {
-            method: "POST",
+        const response1 = await fetch(`${webserver.origin}/api/v1/migrations`, {
+          method: "POST",
 
-            headers: {
-              Cookie: `session_id=${sessionObject.token}`,
-            },
+          headers: {
+            Cookie: `session_id=${sessionObject.token}`,
           },
-        );
+        });
         expect(response1.status).toBe(403);
 
         const responseBody = await response1.json();
@@ -78,12 +70,9 @@ describe(`POST /api/v1/migrations`, () => {
       });
 
       test(`For the second time`, async () => {
-        const response2 = await fetch(
-          "http://localhost:3000/api/v1/migrations",
-          {
-            method: "POST",
-          },
-        );
+        const response2 = await fetch(`${webserver.origin}/api/v1/migrations`, {
+          method: "POST",
+        });
         expect(response2.status).toBe(403);
 
         const responseBody = await response2.json();
@@ -107,15 +96,12 @@ describe(`POST /api/v1/migrations`, () => {
           "create:migration",
         ]);
         const sessionObject = await orchestrator.createSession(activateUser.id);
-        const response1 = await fetch(
-          "http://localhost:3000/api/v1/migrations",
-          {
-            method: "POST",
-            headers: {
-              Cookie: `session_id=${sessionObject.token}`,
-            },
+        const response1 = await fetch(`${webserver.origin}/api/v1/migrations`, {
+          method: "POST",
+          headers: {
+            Cookie: `session_id=${sessionObject.token}`,
           },
-        );
+        });
         expect(response1.status).toBe(200);
 
         const response1Body = await response1.json();
@@ -131,15 +117,12 @@ describe(`POST /api/v1/migrations`, () => {
           "create:migration",
         ]);
         const sessionObject = await orchestrator.createSession(activateUser.id);
-        const response2 = await fetch(
-          "http://localhost:3000/api/v1/migrations",
-          {
-            method: "POST",
-            headers: {
-              Cookie: `session_id=${sessionObject.token}`,
-            },
+        const response2 = await fetch(`${webserver.origin}/api/v1/migrations`, {
+          method: "POST",
+          headers: {
+            Cookie: `session_id=${sessionObject.token}`,
           },
-        );
+        });
         expect(response2.status).toBe(200);
 
         const response2Body = await response2.json();
