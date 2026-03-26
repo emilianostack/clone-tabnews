@@ -227,6 +227,7 @@ describe(`PATCH /api/v1/users/[username]`, () => {
       const createdUser = await orchestrator.createUser();
       const activatedUser = await orchestrator.activateUser(createdUser);
       const sessionObject = await orchestrator.createSession(activatedUser.id);
+      const newEmail = "uniqueEmail2@curso.dev";
 
       const response = await fetch(
         `${webserver.origin}/api/v1/users/${createdUser.username}`,
@@ -238,7 +239,7 @@ describe(`PATCH /api/v1/users/[username]`, () => {
             Cookie: `session_id=${sessionObject.token}`,
           },
           body: JSON.stringify({
-            email: "uniqueEmail2@curso.dev",
+            email: newEmail,
           }),
         },
       );
@@ -260,6 +261,12 @@ describe(`PATCH /api/v1/users/[username]`, () => {
       expect(Date.parse(responseBody.updated_at)).not.toBeNaN();
 
       expect(responseBody.updated_at > responseBody.created_at).toBe(true);
+
+      const updatedUserInDatabase = await user.findOneByEmail(newEmail);
+
+      expect(updatedUserInDatabase.id).toBe(createdUser.id);
+      expect(updatedUserInDatabase.username).toBe(createdUser.username);
+      expect(updatedUserInDatabase.email).toBe(newEmail);
     });
 
     test(`With new 'password'`, async () => {
