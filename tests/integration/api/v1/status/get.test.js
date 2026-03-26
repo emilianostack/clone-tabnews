@@ -25,6 +25,20 @@ describe(`GET /api/v1/status`, () => {
     });
   });
   describe(`Default user`, () => {
+    test(`Accessing endpoint with valid session`, async () => {
+      const defaultUser = await orchestrator.createUser();
+      const activatedUser = await orchestrator.activateUser(defaultUser);
+      const sessionObject = await orchestrator.createSession(activatedUser);
+
+      const response = await fetch(`${webserver.origin}/api/v1/status`, {
+        headers: {
+          Cookie: `session_id=${sessionObject.token}`,
+        },
+      });
+
+      expect(response.status).toBe(200);
+    });
+
     test(`Retrieving current system status`, async () => {
       const defaultUser = await orchestrator.createUser();
       const activateUser = await orchestrator.activateUser(defaultUser);
