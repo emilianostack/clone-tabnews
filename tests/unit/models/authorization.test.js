@@ -56,14 +56,16 @@ describe(`models/authorization.js`, () => {
 
     test(`with valid \`user\`, known \`feature\` and \`resource\``, () => {
       const createdUser = { features: ["read:user"] };
+      const createdAt = new Date("2026-03-26T12:00:00.000Z").toISOString();
+      const updatedAt = new Date("2026-03-26T12:30:00.000Z").toISOString();
       const resource = {
         id: 1,
         username: "resource",
         email: "resource@curso.dev",
         password: "resource",
         features: ["read:user"],
-        created_at: new Date(),
-        updated_at: new Date(),
+        created_at: createdAt,
+        updated_at: updatedAt,
       };
 
       const result = authorization.filterOutput(
