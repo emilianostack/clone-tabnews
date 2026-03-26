@@ -9,9 +9,9 @@ beforeAll(async () => {
   await orchestrator.runPendingMigrations();
 });
 
-describe("DELETE /api/v1/sessions", () => {
-  describe("Default user", () => {
-    test("With nonexistent session", async () => {
+describe(`DELETE /api/v1/sessions`, () => {
+  describe(`Default user`, () => {
+    test(`With nonexistent session`, async () => {
       const nonExistentToken =
         "GoLmwtrlsxc5szPdRQ2fsFWoOBrFaR3VXxcwb5Tfx5eRCX4PBjgP84a5sBBsJ9tA";
       const response = await fetch("http://localhost:3000/api/v1/sessions", {
@@ -31,7 +31,7 @@ describe("DELETE /api/v1/sessions", () => {
         status_code: 401,
       });
     });
-    test("With expired session", async () => {
+    test(`With expired session`, async () => {
       jest.useFakeTimers({
         now: new Date(Date.now() - session.EXPIRATION_IN_MILLISECONDS),
       });
@@ -60,7 +60,7 @@ describe("DELETE /api/v1/sessions", () => {
         status_code: 401,
       });
     });
-    test("With valid session", async () => {
+    test(`With valid session`, async () => {
       const createdUser = await orchestrator.createUser();
       const sessionObject = await orchestrator.createSession(createdUser.id);
 

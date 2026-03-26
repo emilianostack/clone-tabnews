@@ -9,9 +9,9 @@ beforeAll(async () => {
   await orchestrator.runPendingMigrations();
 });
 
-describe("POST /api/v1/users", () => {
-  describe("Anonymous user", () => {
-    test("With unique and valid data", async () => {
+describe(`POST /api/v1/users`, () => {
+  describe(`Anonymous user`, () => {
+    test(`With unique and valid data`, async () => {
       const response = await fetch("http://localhost:3000/api/v1/users", {
         method: "POST",
         headers: {
@@ -53,7 +53,7 @@ describe("POST /api/v1/users", () => {
       expect(incorrectPasswordMatch).toBe(false);
     });
 
-    test("With duplicated `email`", async () => {
+    test(`With duplicated \`email\``, async () => {
       const response1 = await fetch("http://localhost:3000/api/v1/users", {
         method: "POST",
         headers: {
@@ -89,7 +89,7 @@ describe("POST /api/v1/users", () => {
       });
     });
 
-    test("With duplicated `username`", async () => {
+    test(`With duplicated \`username\``, async () => {
       const response1 = await fetch("http://localhost:3000/api/v1/users", {
         method: "POST",
         headers: {
@@ -127,8 +127,8 @@ describe("POST /api/v1/users", () => {
   });
 });
 
-describe("Default user", () => {
-  test("With unique and valid data", async () => {
+describe(`Default user`, () => {
+  test(`With unique and valid data`, async () => {
     const user1 = await orchestrator.createUser();
     await orchestrator.activateUser(user1);
 

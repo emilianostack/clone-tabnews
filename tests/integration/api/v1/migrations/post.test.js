@@ -6,10 +6,10 @@ beforeAll(async () => {
   await orchestrator.runPendingMigrations();
 });
 
-describe("POST /api/v1/migrations", () => {
-  describe("Anonymous user", () => {
-    describe("Running pending migrations", () => {
-      test("For the first time", async () => {
+describe(`POST /api/v1/migrations`, () => {
+  describe(`Anonymous user`, () => {
+    describe(`Running pending migrations`, () => {
+      test(`For the first time`, async () => {
         const response1 = await fetch(
           "http://localhost:3000/api/v1/migrations",
           {
@@ -28,7 +28,7 @@ describe("POST /api/v1/migrations", () => {
         });
       });
 
-      test("For the second time", async () => {
+      test(`For the second time`, async () => {
         const response2 = await fetch(
           "http://localhost:3000/api/v1/migrations",
           {
@@ -48,9 +48,9 @@ describe("POST /api/v1/migrations", () => {
       });
     });
   });
-  describe("Default user", () => {
-    describe("Running pending migrations", () => {
-      test("For the first time", async () => {
+  describe(`Default user`, () => {
+    describe(`Running pending migrations`, () => {
+      test(`For the first time`, async () => {
         const defaultUser = await orchestrator.createUser();
         const activateUser = await orchestrator.activateUser(defaultUser);
         const sessionObject = await orchestrator.createSession(activateUser.id);
@@ -77,7 +77,7 @@ describe("POST /api/v1/migrations", () => {
         });
       });
 
-      test("For the second time", async () => {
+      test(`For the second time`, async () => {
         const response2 = await fetch(
           "http://localhost:3000/api/v1/migrations",
           {
@@ -97,9 +97,9 @@ describe("POST /api/v1/migrations", () => {
       });
     });
   });
-  describe("Privileged user", () => {
-    describe("Running pending migrations", () => {
-      test("For the first time", async () => {
+  describe(`Privileged user`, () => {
+    describe(`Running pending migrations`, () => {
+      test(`For the first time`, async () => {
         const privilegedUser = await orchestrator.createUser();
         const activateUser = await orchestrator.activateUser(privilegedUser);
         await orchestrator.addFeaturesToUser(privilegedUser, [
@@ -123,7 +123,7 @@ describe("POST /api/v1/migrations", () => {
         expect(Array.isArray(response1Body)).toBe(true);
       });
 
-      test("For the second time", async () => {
+      test(`For the second time`, async () => {
         const privilegedUser = await orchestrator.createUser();
         const activateUser = await orchestrator.activateUser(privilegedUser);
         await orchestrator.addFeaturesToUser(privilegedUser, [

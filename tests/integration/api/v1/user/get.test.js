@@ -9,9 +9,9 @@ beforeAll(async () => {
   await orchestrator.runPendingMigrations();
 });
 
-describe("GET /api/v1/user", () => {
-  describe("Anonymous user", () => {
-    test("Retrieving the endpoint", async () => {
+describe(`GET /api/v1/user`, () => {
+  describe(`Anonymous user`, () => {
+    test(`Retrieving the endpoint`, async () => {
       const response = await fetch("http://localhost:3000/api/v1/user");
 
       expect(response.status).toBe(403);
@@ -27,8 +27,8 @@ describe("GET /api/v1/user", () => {
     });
   });
 
-  describe("Default user", () => {
-    test("With valid session", async () => {
+  describe(`Default user`, () => {
+    test(`With valid session`, async () => {
       const createdUser = await orchestrator.createUser({
         username: "UserWithValidSession",
       });
@@ -91,7 +91,7 @@ describe("GET /api/v1/user", () => {
       });
     });
 
-    test("With halfway-expired session", async () => {
+    test(`With halfway-expired session`, async () => {
       jest.useFakeTimers({
         now: new Date(Date.now() - session.EXPIRATION_IN_MILLISECONDS / 2),
       });
@@ -155,7 +155,7 @@ describe("GET /api/v1/user", () => {
       });
     });
 
-    test("With nonexistent session", async () => {
+    test(`With nonexistent session`, async () => {
       const nonexistentToken =
         "f0b62a5ff97ae607701ceeee2e3c4987c4b9debb534410e2444f9eb2288b6e3b90158a71d086e31eabef9b36cbb549e1";
 
@@ -190,7 +190,7 @@ describe("GET /api/v1/user", () => {
       });
     });
 
-    test("With expired session", async () => {
+    test(`With expired session`, async () => {
       jest.useFakeTimers({
         now: new Date(Date.now() - session.EXPIRATION_IN_MILLISECONDS),
       });
