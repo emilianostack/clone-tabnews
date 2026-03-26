@@ -48,7 +48,7 @@ describe(`POST /api/v1/migrations`, () => {
       test(`For the first time`, async () => {
         const defaultUser = await orchestrator.createUser();
         const activateUser = await orchestrator.activateUser(defaultUser);
-        const sessionObject = await orchestrator.createSession(activateUser.id);
+        const sessionObject = await orchestrator.createSession(activateUser);
 
         const response1 = await fetch(`${webserver.origin}/api/v1/migrations`, {
           method: "POST",
@@ -95,7 +95,7 @@ describe(`POST /api/v1/migrations`, () => {
           "read:migration",
           "create:migration",
         ]);
-        const sessionObject = await orchestrator.createSession(activateUser.id);
+        const sessionObject = await orchestrator.createSession(activateUser);
         const response1 = await fetch(`${webserver.origin}/api/v1/migrations`, {
           method: "POST",
           headers: {
@@ -116,7 +116,7 @@ describe(`POST /api/v1/migrations`, () => {
           "read:migration",
           "create:migration",
         ]);
-        const sessionObject = await orchestrator.createSession(activateUser.id);
+        const sessionObject = await orchestrator.createSession(activateUser);
         const response2 = await fetch(`${webserver.origin}/api/v1/migrations`, {
           method: "POST",
           headers: {
