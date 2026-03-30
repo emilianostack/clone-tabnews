@@ -1,13 +1,16 @@
 import orchestrator from "../orchestrator.js";
+import webserver from "infra/webserver";
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
+  await orchestrator.clearDatabase();
+  await orchestrator.runPendingMigrations();
 });
 
-describe("GET /api/v1/status", () => {
-  describe("Anonymous user", () => {
-    test("Retrieving current system status", async () => {
-      const response = await fetch("http://localhost:3000/api/v1/status");
+describe(`GET /api/v1/status`, () => {
+  describe(`Anonymous user`, () => {
+    test(`Retrieving current system status`, async () => {
+      const response = await fetch(`${webserver.origin}/api/v1/status`);
 
       expect(response.status).toBe(200);
       const responseBody = await response.json();
@@ -21,12 +24,26 @@ describe("GET /api/v1/status", () => {
       expect(responseBody.dependencies.database).not.toHaveProperty("version");
     });
   });
-  describe("Default user", () => {
-    test("Retrieving current system status", async () => {
+  describe(`Default user`, () => {
+    test(`Accessing endpoint with valid session`, async () => {
+      const defaultUser = await orchestrator.createUser();
+      const activatedUser = await orchestrator.activateUser(defaultUser);
+      const sessionObject = await orchestrator.createSession(activatedUser);
+
+      const response = await fetch(`${webserver.origin}/api/v1/status`, {
+        headers: {
+          Cookie: `session_id=${sessionObject.token}`,
+        },
+      });
+
+      expect(response.status).toBe(200);
+    });
+
+    test(`Retrieving current system status`, async () => {
       const defaultUser = await orchestrator.createUser();
       const activateUser = await orchestrator.activateUser(defaultUser);
-      const sessionObject = await orchestrator.createSession(activateUser.id);
-      const response = await fetch("http://localhost:3000/api/v1/status", {
+      const sessionObject = await orchestrator.createSession(activateUser);
+      const response = await fetch(`${webserver.origin}/api/v1/status`, {
         headers: {
           Cookie: `session_id=${sessionObject.token}`,
         },
@@ -44,14 +61,14 @@ describe("GET /api/v1/status", () => {
       expect(responseBody.dependencies.database).not.toHaveProperty("version");
     });
   });
-  describe("Privileged user", () => {
-    test("Retrieving current system status", async () => {
+  describe(`Privileged user`, () => {
+    test(`Retrieving current system status`, async () => {
       const privilegedUser = await orchestrator.createUser();
       const activateUser = await orchestrator.activateUser(privilegedUser);
       await orchestrator.addFeaturesToUser(privilegedUser, ["read:status:all"]);
-      const sessionObject = await orchestrator.createSession(activateUser.id);
+      const sessionObject = await orchestrator.createSession(activateUser);
 
-      const response = await fetch("http://localhost:3000/api/v1/status", {
+      const response = await fetch(`${webserver.origin}/api/v1/status`, {
         headers: {
           Cookie: `session_id=${sessionObject.token}`,
         },

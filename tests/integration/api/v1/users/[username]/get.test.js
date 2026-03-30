@@ -1,5 +1,6 @@
 import { version as uuidVersion } from "uuid";
 import orchestrator from "../../orchestrator";
+import webserver from "infra/webserver";
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
@@ -7,15 +8,15 @@ beforeAll(async () => {
   await orchestrator.runPendingMigrations();
 });
 
-describe("GET /api/v1/users/[username]", () => {
-  describe("Anonymous user", () => {
-    test("With exact name match", async () => {
+describe(`GET /api/v1/users/[username]`, () => {
+  describe(`Anonymous user`, () => {
+    test(`With exact name match`, async () => {
       await orchestrator.createUser({
         username: "MesmoCase",
       });
 
       const response = await fetch(
-        "http://localhost:3000/api/v1/users/MesmoCase",
+        `${webserver.origin}/api/v1/users/MesmoCase`,
       );
       expect(response.status).toBe(200);
 
@@ -32,13 +33,13 @@ describe("GET /api/v1/users/[username]", () => {
       expect(Date.parse(responseBody.created_at)).not.toBeNaN();
       expect(Date.parse(responseBody.updated_at)).not.toBeNaN();
     });
-    test("With case mismatch", async () => {
+    test(`With case mismatch`, async () => {
       await orchestrator.createUser({
         username: "CaseDiferente",
       });
 
       const response = await fetch(
-        "http://localhost:3000/api/v1/users/casediferente",
+        `${webserver.origin}/api/v1/users/casediferente`,
       );
       expect(response.status).toBe(200);
 
@@ -57,9 +58,9 @@ describe("GET /api/v1/users/[username]", () => {
       expect(Date.parse(responseBody.updated_at)).not.toBeNaN();
     });
 
-    test("With nonexistent username", async () => {
+    test(`With nonexistent username`, async () => {
       const response = await fetch(
-        "http://localhost:3000/api/v1/users/UsuarioInexistente",
+        `${webserver.origin}/api/v1/users/UsuarioInexistente`,
       );
       expect(response.status).toBe(404);
 

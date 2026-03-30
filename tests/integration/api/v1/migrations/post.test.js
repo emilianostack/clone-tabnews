@@ -1,4 +1,5 @@
 import orchestrator from "../orchestrator.js";
+import webserver from "infra/webserver";
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
@@ -6,16 +7,13 @@ beforeAll(async () => {
   await orchestrator.runPendingMigrations();
 });
 
-describe("POST /api/v1/migrations", () => {
-  describe("Anonymous user", () => {
-    describe("Running pending migrations", () => {
-      test("For the first time", async () => {
-        const response1 = await fetch(
-          "http://localhost:3000/api/v1/migrations",
-          {
-            method: "POST",
-          },
-        );
+describe(`POST /api/v1/migrations`, () => {
+  describe(`Anonymous user`, () => {
+    describe(`Running pending migrations`, () => {
+      test(`For the first time`, async () => {
+        const response1 = await fetch(`${webserver.origin}/api/v1/migrations`, {
+          method: "POST",
+        });
         expect(response1.status).toBe(403);
 
         const responseBody = await response1.json();
@@ -28,13 +26,10 @@ describe("POST /api/v1/migrations", () => {
         });
       });
 
-      test("For the second time", async () => {
-        const response2 = await fetch(
-          "http://localhost:3000/api/v1/migrations",
-          {
-            method: "POST",
-          },
-        );
+      test(`For the second time`, async () => {
+        const response2 = await fetch(`${webserver.origin}/api/v1/migrations`, {
+          method: "POST",
+        });
         expect(response2.status).toBe(403);
 
         const responseBody = await response2.json();
@@ -48,23 +43,20 @@ describe("POST /api/v1/migrations", () => {
       });
     });
   });
-  describe("Default user", () => {
-    describe("Running pending migrations", () => {
-      test("For the first time", async () => {
+  describe(`Default user`, () => {
+    describe(`Running pending migrations`, () => {
+      test(`For the first time`, async () => {
         const defaultUser = await orchestrator.createUser();
         const activateUser = await orchestrator.activateUser(defaultUser);
-        const sessionObject = await orchestrator.createSession(activateUser.id);
+        const sessionObject = await orchestrator.createSession(activateUser);
 
-        const response1 = await fetch(
-          "http://localhost:3000/api/v1/migrations",
-          {
-            method: "POST",
+        const response1 = await fetch(`${webserver.origin}/api/v1/migrations`, {
+          method: "POST",
 
-            headers: {
-              Cookie: `session_id=${sessionObject.token}`,
-            },
+          headers: {
+            Cookie: `session_id=${sessionObject.token}`,
           },
-        );
+        });
         expect(response1.status).toBe(403);
 
         const responseBody = await response1.json();
@@ -77,13 +69,10 @@ describe("POST /api/v1/migrations", () => {
         });
       });
 
-      test("For the second time", async () => {
-        const response2 = await fetch(
-          "http://localhost:3000/api/v1/migrations",
-          {
-            method: "POST",
-          },
-        );
+      test(`For the second time`, async () => {
+        const response2 = await fetch(`${webserver.origin}/api/v1/migrations`, {
+          method: "POST",
+        });
         expect(response2.status).toBe(403);
 
         const responseBody = await response2.json();
@@ -97,25 +86,22 @@ describe("POST /api/v1/migrations", () => {
       });
     });
   });
-  describe("Privileged user", () => {
-    describe("Running pending migrations", () => {
-      test("For the first time", async () => {
+  describe(`Privileged user`, () => {
+    describe(`Running pending migrations`, () => {
+      test(`For the first time`, async () => {
         const privilegedUser = await orchestrator.createUser();
         const activateUser = await orchestrator.activateUser(privilegedUser);
         await orchestrator.addFeaturesToUser(privilegedUser, [
           "read:migration",
           "create:migration",
         ]);
-        const sessionObject = await orchestrator.createSession(activateUser.id);
-        const response1 = await fetch(
-          "http://localhost:3000/api/v1/migrations",
-          {
-            method: "POST",
-            headers: {
-              Cookie: `session_id=${sessionObject.token}`,
-            },
+        const sessionObject = await orchestrator.createSession(activateUser);
+        const response1 = await fetch(`${webserver.origin}/api/v1/migrations`, {
+          method: "POST",
+          headers: {
+            Cookie: `session_id=${sessionObject.token}`,
           },
-        );
+        });
         expect(response1.status).toBe(200);
 
         const response1Body = await response1.json();
@@ -123,23 +109,20 @@ describe("POST /api/v1/migrations", () => {
         expect(Array.isArray(response1Body)).toBe(true);
       });
 
-      test("For the second time", async () => {
+      test(`For the second time`, async () => {
         const privilegedUser = await orchestrator.createUser();
         const activateUser = await orchestrator.activateUser(privilegedUser);
         await orchestrator.addFeaturesToUser(privilegedUser, [
           "read:migration",
           "create:migration",
         ]);
-        const sessionObject = await orchestrator.createSession(activateUser.id);
-        const response2 = await fetch(
-          "http://localhost:3000/api/v1/migrations",
-          {
-            method: "POST",
-            headers: {
-              Cookie: `session_id=${sessionObject.token}`,
-            },
+        const sessionObject = await orchestrator.createSession(activateUser);
+        const response2 = await fetch(`${webserver.origin}/api/v1/migrations`, {
+          method: "POST",
+          headers: {
+            Cookie: `session_id=${sessionObject.token}`,
           },
-        );
+        });
         expect(response2.status).toBe(200);
 
         const response2Body = await response2.json();
